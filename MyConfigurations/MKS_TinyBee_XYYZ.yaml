@@ -182,6 +182,15 @@ oled:
    width: 128
    height: 64
    radio_delay_ms: 1000
+   
+# oled I2c connection:
+# Warning, connector housing on the tinybee board is wrong, rotated 180°. Pin 1 mark (square solder pad) is OK.
+# Warning, connections in documention pinout PDF is wrong & differs from schedule PDF
+# Tested using 128x64 SDD1306 LCD
+# EXP1-2 = SCL
+# EXP2-3 = SDA
+# EXP2-9 = VCC (3v3)
+# EXP2-10 = GND
 
  # USB  TX0(1)  RX0(3)
  # J3-> TX2(17) RX2(16)
