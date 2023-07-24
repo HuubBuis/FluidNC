@@ -28,8 +28,8 @@ axes:
   x:
     # X
     steps_per_mm: 320
-    max_rate_mm_per_min: 5000.000
-    acceleration_mm_per_sec2: 1500.000
+    max_rate_mm_per_min: 500.000
+    acceleration_mm_per_sec2: 50.000
     max_travel_mm: 325.000
     soft_limits: true
     homing:
@@ -37,7 +37,7 @@ axes:
       positive_direction: false
       mpos_mm: 0.000
       feed_mm_per_min: 300.000
-      seek_mm_per_min: 5000.000
+      seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
@@ -53,28 +53,28 @@ axes:
 
   y:
     # Y
-    steps_per_mm: 320
-    max_rate_mm_per_min: 5000.000
-    acceleration_mm_per_sec2: 300.000
+    steps_per_mm: 800
+    max_rate_mm_per_min: 700.000
+    acceleration_mm_per_sec2: 40.000
     max_travel_mm: 220.000
-    soft_limits: true
+    soft_limits: false
     homing:
       cycle: 1
       positive_direction: false
       mpos_mm: 0.000
       feed_mm_per_min: 300.000
-      seek_mm_per_min: 5000.000
+      seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
-
+     #CN Motor Y
     motor0:
       limit_neg_pin: gpio.32
       hard_limits: false
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.4
-        direction_pin: I2SO.5
+        direction_pin: I2SO.5:high
         disable_pin: I2SO.3
     #CN Motor E1
     motor1:
@@ -83,14 +83,14 @@ axes:
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.10
-        direction_pin: I2SO.11
+        direction_pin: I2SO.11:high
         disable_pin: I2SO.9
 
   z:
     # Z
     steps_per_mm: 320
-    max_rate_mm_per_min: 2500.000
-    acceleration_mm_per_sec2: 500.000
+    max_rate_mm_per_min: 500.000
+    acceleration_mm_per_sec2: 50.000
     max_travel_mm: 120.000
     soft_limits: true
     homing:
@@ -98,7 +98,7 @@ axes:
       positive_direction: false
       mpos_mm: 0.000
       feed_mm_per_min: 300.000
-      seek_mm_per_min: 1000.000
+      seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
@@ -141,8 +141,8 @@ control:
 macros:
   startup_line0:
   startup_line1:
-  macro0: $SD/Run=lasertest.gcode
-  macro1: $SD/Run=home.gcode
+  macro0: $LocalFs/Run=Macro0.gcode
+  macro1: $LocalFs/Run=Macro1.gcode
   macro2:
   macro3:
 
@@ -171,21 +171,20 @@ user_outputs:
 
 start:
   must_home: false
+# Olde disabled because it is not connected at the moment
+# i2c0:
+#    sda_pin: gpio.14
+#    scl_pin: gpio.13
 
-i2c0:
-   sda_pin: gpio.14
-   scl_pin: gpio.13
+# oled:
+#    i2c_num: 0
+#    i2c_address: 60
+#    width: 128
+#    height: 64
+#    radio_delay_ms: 1000
 
-oled:
-   i2c_num: 0
-   i2c_address: 60
-   width: 128
-   height: 64
-   radio_delay_ms: 1000
-   
-# oled I2c connection:
+# oled I2 connection:
 # Warning, connector housing on the tinybee board is wrong, rotated 180°. Pin 1 mark (square solder pad) is OK.
-# Warning, connections in documention pinout PDF is wrong & differs from schedule PDF
 # Tested using 128x64 SDD1306 LCD
 # EXP1-2 = SCL
 # EXP2-3 = SDA
