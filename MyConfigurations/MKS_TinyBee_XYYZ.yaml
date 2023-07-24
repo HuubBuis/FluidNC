@@ -2,9 +2,13 @@
 # press Ctrl U and upload the <FluidNC\example_configs\MKS_TinyBee_XYYZ.yaml> configuration file
 # set the configuration filename by the next command
 # $Config/Filename=MKS_TinyBee_XYYZ.YAML
+# Reboot board
 # run next commands to setup sta mode, ssid, password, hostname
-
-
+# $WiFi/Mode=STA
+# $Sta/SSID=YourWiFiRouterSSD
+# $Sta/Password=YourWiFiRouterPassword
+# $Hostname=YourMachineName
+# Reboot board, in the serial terminal you will see the boot messages
 
 board: MKS TinyBee V1.0
 name: Router XYYZ
@@ -167,6 +171,17 @@ user_outputs:
 
 start:
   must_home: false
+
+i2c0:
+   sda_pin: gpio.14
+   scl_pin: gpio.13
+
+oled:
+   i2c_num: 0
+   i2c_address: 60
+   width: 128
+   height: 64
+   radio_delay_ms: 1000
 
  # USB  TX0(1)  RX0(3)
  # J3-> TX2(17) RX2(16)
