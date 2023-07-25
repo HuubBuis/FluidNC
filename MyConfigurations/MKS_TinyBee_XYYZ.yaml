@@ -1,7 +1,7 @@
 # Run these commands at the serial terminal (fluidterm)
 # press Ctrl U and upload the <FluidNC\example_configs\MKS_TinyBee_XYYZ.yaml> configuration file
 # set the configuration filename by the next command
-# $Config/Filename=MKS_TinyBee_XYYZ.YAML
+# $Config/Filename=MKS_TinyBee_XYYZ.yaml
 # Reboot board
 # run next commands to setup sta mode, ssid, password, hostname
 # $WiFi/Mode=STA
@@ -9,6 +9,12 @@
 # $Sta/Password=YourWiFiRouterPassword
 # $Hostname=YourMachineName
 # Reboot board, in the serial terminal you will see the boot messages
+
+#usefull commands:
+# $Startup/Show     shows the startup messages
+# $Limits           show the limit switch status realtime
+# $NVX              erase settings. Do this to ensure only config file settings are used
+
 
 board: MKS TinyBee V1.0
 name: Router XYYZ
@@ -43,7 +49,7 @@ axes:
       feed_scaler: 1.100
 
     motor0:
-      limit_neg_pin: gpio.33
+      # limit_neg_pin: gpio.33
       hard_limits: false
       pulloff_mm: 2.000
       stepstick:
@@ -55,31 +61,31 @@ axes:
     # Y
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
-    acceleration_mm_per_sec2: 40.000
-    max_travel_mm: 220.000
-    soft_limits: false
+    acceleration_mm_per_sec2: 80.000
+    # max_travel_mm: 220.000
+    # soft_limits: false
     homing:
       cycle: 1
-      positive_direction: false
+      positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 300.000
+      feed_mm_per_min: 250.000
       seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
-     #CN Motor Y
+     #Motor Y1, CN=Y
     motor0:
-      limit_neg_pin: gpio.32
-      hard_limits: false
+      limit_neg_pin: gpio.32:low:pu
+      hard_limits: true
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.4
         direction_pin: I2SO.5:high
         disable_pin: I2SO.3
-    #CN Motor E1
+    #Motor Y2, CN=E1
     motor1:
-      limit_neg_pin: gpio.2
-      hard_limits: false
+      limit_neg_pin: gpio.35:low:pu
+      # hard_limits: true
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.10
@@ -104,7 +110,7 @@ axes:
       feed_scaler: 1.100
 
     motor0:
-      limit_neg_pin: gpio.22
+      # limit_neg_pin: gpio.22
       hard_limits: false
       pulloff_mm: 1.000
       stepstick:
