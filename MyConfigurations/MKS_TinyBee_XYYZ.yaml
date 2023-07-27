@@ -18,7 +18,7 @@
 
 board: MKS TinyBee V1.0
 name: Router XYYZ
-meta: (22.07.2023) by MetalWorkerTools
+meta: (26.07.2023) by MetalWorkerTools
 
 kinematics:
   Cartesian:
@@ -33,46 +33,47 @@ stepping:
 axes:
   x:
     # X
-    steps_per_mm: 320
-    max_rate_mm_per_min: 500.000
-    acceleration_mm_per_sec2: 50.000
-    max_travel_mm: 325.000
+    steps_per_mm: 800
+    max_rate_mm_per_min: 700.000
+    acceleration_mm_per_sec2: 100.000
+    max_travel_mm: 200.000
     soft_limits: true
     homing:
-      cycle: 0
+      cycle: 2
       positive_direction: false
       mpos_mm: 0.000
-      feed_mm_per_min: 300.000
+      feed_mm_per_min: 100.000
       seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
 
     motor0:
-      # limit_neg_pin: gpio.33
-      hard_limits: false
+      limit_neg_pin: gpio.33:low:pu
+      hard_limits: true
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.1
-        direction_pin: I2SO.2
+        direction_pin: I2SO.2:low
         disable_pin: I2SO.0
 
   y:
     # Y
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
-    acceleration_mm_per_sec2: 80.000
+    acceleration_mm_per_sec2: 100.000
     # max_travel_mm: 220.000
     # soft_limits: false
     homing:
       cycle: 1
       positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 250.000
+      feed_mm_per_min: 100.000
       seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
+     #default pin = high 
      #Motor Y1, CN=Y
     motor0:
       limit_neg_pin: gpio.32:low:pu
@@ -80,7 +81,7 @@ axes:
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.4
-        direction_pin: I2SO.5:high
+        direction_pin: I2SO.5
         disable_pin: I2SO.3
     #Motor Y2, CN=E1
     motor1:
@@ -89,21 +90,21 @@ axes:
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.10
-        direction_pin: I2SO.11:high
+        direction_pin: I2SO.11
         disable_pin: I2SO.9
 
   z:
     # Z
-    steps_per_mm: 320
-    max_rate_mm_per_min: 500.000
-    acceleration_mm_per_sec2: 50.000
+    steps_per_mm: 800
+    max_rate_mm_per_min: 700.000
+    acceleration_mm_per_sec2: 150.000
     max_travel_mm: 120.000
-    soft_limits: true
+    soft_limits: false
     homing:
-      cycle: 0
+      cycle: -1
       positive_direction: false
       mpos_mm: 0.000
-      feed_mm_per_min: 300.000
+      feed_mm_per_min: 100.000
       seek_mm_per_min: 500.000
       settle_ms: 500
       seek_scaler: 1.100
@@ -112,10 +113,10 @@ axes:
     motor0:
       # limit_neg_pin: gpio.22
       hard_limits: false
-      pulloff_mm: 1.000
+      pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.7
-        direction_pin: I2SO.8
+        direction_pin: I2SO.8:low
         disable_pin: I2SO.6
 
 
