@@ -18,7 +18,7 @@
 
 board: MKS TinyBee V1.0
 name: Router XYYZ
-meta: (26.07.2023) by MetalWorkerTools
+meta: (28.07.2023) by MetalWorkerTools
 
 kinematics:
   Cartesian:
@@ -36,10 +36,10 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 100.000
-    max_travel_mm: 200.000
+    max_travel_mm: 136.000
     soft_limits: true
     homing:
-      cycle: 2
+      cycle: 3
       positive_direction: false
       mpos_mm: 0.000
       feed_mm_per_min: 100.000
@@ -62,10 +62,10 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 100.000
-    # max_travel_mm: 220.000
-    # soft_limits: false
+    max_travel_mm: 225.000
+    soft_limits: true
     homing:
-      cycle: 1
+      cycle: 2
       positive_direction: true
       mpos_mm: 0.000
       feed_mm_per_min: 100.000
@@ -99,10 +99,10 @@ axes:
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 150.000
     max_travel_mm: 120.000
-    soft_limits: false
+    soft_limits: true
     homing:
-      cycle: -1
-      positive_direction: false
+      cycle: 1
+      positive_direction: true
       mpos_mm: 0.000
       feed_mm_per_min: 100.000
       seek_mm_per_min: 500.000
@@ -111,8 +111,8 @@ axes:
       feed_scaler: 1.100
 
     motor0:
-      # limit_neg_pin: gpio.22
-      hard_limits: false
+      limit_pos_pin: gpio.22:low:pu
+      hard_limits: true
       pulloff_mm: 2.000
       stepstick:
         step_pin: I2SO.7
