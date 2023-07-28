@@ -42,14 +42,14 @@ axes:
       cycle: 3
       positive_direction: false
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
-      seek_mm_per_min: 500.000
+      feed_mm_per_min: 250.000
+      seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
 
     motor0:
-      limit_neg_pin: gpio.33:low:pu
+      limit_neg_pin: gpio.33:low:pd
       hard_limits: true
       pulloff_mm: 2.000
       stepstick:
@@ -68,8 +68,8 @@ axes:
       cycle: 2
       positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
-      seek_mm_per_min: 500.000
+      feed_mm_per_min: 250.000
+      seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
@@ -104,8 +104,8 @@ axes:
       cycle: 1
       positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
-      seek_mm_per_min: 500.000
+      feed_mm_per_min: 250.000
+      seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
