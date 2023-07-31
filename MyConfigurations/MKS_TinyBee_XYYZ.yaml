@@ -31,8 +31,9 @@ stepping:
   disable_delay_us: 0
 
 axes:
+  #default pin = high
+  # X  
   x:
-    # X
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 100.000
@@ -47,7 +48,7 @@ axes:
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
-
+    #Motor X, CN=X
     motor0:
       limit_neg_pin: gpio.33:low:pd
       hard_limits: true
@@ -73,7 +74,6 @@ axes:
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
-     #default pin = high 
      #Motor Y1, CN=Y
     motor0:
       limit_neg_pin: gpio.32:low:pu
@@ -109,7 +109,7 @@ axes:
       settle_ms: 500
       seek_scaler: 1.100
       feed_scaler: 1.100
-
+    #Motor Z, CN=Z
     motor0:
       limit_pos_pin: gpio.22:low:pu
       hard_limits: true
@@ -118,7 +118,6 @@ axes:
         step_pin: I2SO.7
         direction_pin: I2SO.8:low
         disable_pin: I2SO.6
-
 
 i2so:
   bck_pin: gpio.25
@@ -130,9 +129,9 @@ spi:
   mosi_pin: gpio.23
   sck_pin: gpio.18
 
-sdcard:
-  cs_pin: gpio.5
-  card_detect_pin: NO_PIN
+# sdcard:
+#   cs_pin: gpio.5
+#   card_detect_pin: NO_PIN
 
 control:
   safety_door_pin: NO_PIN
@@ -140,7 +139,8 @@ control:
   feed_hold_pin: NO_PIN
   cycle_start_pin: NO_PIN
   # EXP1 BTN_ENC
-  macro0_pin: gpio.4:low:pu
+  # macro0_pin: gpio.4:low:pu
+  macro0_pin: NO_PIN
   macro1_pin: NO_PIN
   macro2_pin: NO_PIN
   macro3_pin: NO_PIN
@@ -149,7 +149,7 @@ macros:
   startup_line0:
   startup_line1:
   macro0: $LocalFs/Run=Macro0.gcode
-  macro1: $LocalFs/Run=Macro1.gcode
+  macro1: 
   macro2:
   macro3:
 
@@ -158,9 +158,10 @@ coolant:
   mist_pin: NO_PIN
   delay_ms: 0
 
-#probe:
-#  pin: gpio.2
-#  check_mode_start: true
+probe:
+  # TB input
+  pin: gpio.39:low
+  check_mode_start: true
 
 user_outputs:
   analog0_pin: NO_PIN
@@ -178,7 +179,21 @@ user_outputs:
 
 start:
   must_home: false
-# Olde disabled because it is not connected at the moment
+# # Spindle disabled because it is not connected at the moment  
+# # spindle PWM signal
+# PWM:
+#   pwm_hz: 2500
+#   # on EXP1 IO15 connector.
+#   # note IO15 will give some short pulses on boot, which may activate spindle
+#   # use IO17 on EXP1 to avoid
+#   output_pin: gpio.15:high
+#   s0_with_disable: true
+#   tool_num: 0
+#   spinup_ms: 4000
+#   spindown_ms: 4000
+#   speed_map: 0=0.000% 12000=100.000%
+
+# Oled disabled because it is not connected at the moment
 # i2c0:
 #    sda_pin: gpio.14
 #    scl_pin: gpio.13
