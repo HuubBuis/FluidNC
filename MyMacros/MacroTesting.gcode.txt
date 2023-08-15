@@ -1,0 +1,47 @@
+; P1 =G54 P2=G55 P3=G56 P4=G57 P5=G58 P6=G59
+; Xmax=140 Ymax=240
+; G53=Home Position in Machine Coordinates (0;0;0)
+; G59=Probe Trigger Position, Home position at Xmax (140)
+; G58=Tool change position, Home position at -Ymax; Xmax/2 (240;70)
+; G54=Stock position 1 default  (Vice corner left)
+; G55=Stock position 2          (Vice corner right)
+; G56=Stock position 3
+; G57=Stock position 4 
+
+; Range X: 0..140  Y: 0..-240  Z:0..-119
+;
+; Homing cycle
+G58                         ; Select WCO (work offset) G58
+$H                          ; Home Z,Y,X
+; $HZ                         ; Home Z, for testing
+
+; Preparations after homing, have to be done once
+;G10 L2 P1 X0 Y-76.4 Z-19    ; Set G54 WCO to the position of the (my) plate fixture. Need to be set once.
+;G10 L2 P2 X10 Y-20 Z-60     ; Set G55 WCO to the position of the (my) vice fixture. Need to be set once.
+;G10 L2 P3 X70 Y-240 Z0      ; Set G56 WCO to the tool change position. Need to be set once.
+;G10 L2 P4 X140 Y0 Z0        ; Set G59 WCO to the probe position. Need to be set once.
+;G10 L2 P6 X3 Y-229.5 Z-80   ; Set G57 WCO to the table end position. Need to be set once.
+
+;G10 L20 P0 X0 Y0 Z0         ; Set WCO (G58) to Zero
+
+; Probe Cycle
+G58;                        ; Set Home WCO
+G90 F1000 Z0                ; Move to top Z position
+G57                         ; Select WCO G57
+G10 L20 P0 Z0               ; Set current position Z (WCO) to 0 so max travel is known
+G90 F1000 X0 Y0             ; Move to probe postion X=0,Y=0
+G91 G38.2Z-100F500P52.15    ; Probe (sensor height 52 mm)
+G0 G90 F500 Z60             ; Clear the probe and move to know position 60 mm above table
+G54                         ; Select WCO G54
+G10 L20 P0 Z41              ; Set workoffset Z (G54), 19 mm from G57 (60-19=41)              
+
+; Position tool at G54 WCO 
+G58                         ; Set Home WCO
+G90 F1000 Z0                ; Move to Z top position 
+G54                         ; Select workoffset G54
+G90 X0 Y0                   ; Move to G55 position X0, Y0
+;G10 L2 P1 X2 Y-76.4 Z19    ; Set G54 WCO to the position of the (my) fixture. Need to be set once.
+
+; Move to Tool Change Position G54
+G90 G5 X0 Y0 Z0             ; Move to the G56 tool change position
+G54                         ; Select workoffset G54
