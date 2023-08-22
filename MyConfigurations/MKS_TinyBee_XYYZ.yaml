@@ -14,7 +14,14 @@
 # $Startup/Show     shows the startup messages
 # $Limits           show the limit switch status realtime
 # $NVX              erase settings. Do this to ensure only config file settings are used
+# Current range X Y Z: 140 240 120
 
+# Prepare Squaring, move to measurement positionin in WO G53 (machine position)
+# $H;G53Y-86;G53Z-20;
+# CheckSquaring, Move X-axis back and forth 140 mm at 100 mm/min in WO G53 (machine position)
+# G53G1F100X140;
+# G53G1F100X0
+# Adjust pulloff Y-axis motor 1 to square the gantry and check again
 
 board: MKS TinyBee V1.0
 name: Router XYYZ
@@ -37,7 +44,7 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 100.000
-    max_travel_mm: 136.000
+    max_travel_mm: 141.000
     soft_limits: true
     homing:
       cycle: 3
@@ -52,7 +59,7 @@ axes:
     motor0:
       limit_neg_pin: gpio.33:low:pd
       hard_limits: true
-      pulloff_mm: 2.000
+      pulloff_mm: 1.000
       stepstick:
         step_pin: I2SO.1
         direction_pin: I2SO.2:low
@@ -63,7 +70,7 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 100.000
-    max_travel_mm: 225.000
+    max_travel_mm: 241.000
     soft_limits: true
     homing:
       cycle: 2
@@ -78,7 +85,7 @@ axes:
     motor0:
       limit_neg_pin: gpio.32:low:pu
       hard_limits: true
-      pulloff_mm: 2.000
+      pulloff_mm: 1.000
       stepstick:
         step_pin: I2SO.4
         direction_pin: I2SO.5
@@ -87,7 +94,7 @@ axes:
     motor1:
       limit_neg_pin: gpio.35:low:pu
       # hard_limits: true
-      pulloff_mm: 2.000
+      pulloff_mm: 1.10
       stepstick:
         step_pin: I2SO.10
         direction_pin: I2SO.11
@@ -113,7 +120,7 @@ axes:
     motor0:
       limit_pos_pin: gpio.22:low:pu
       hard_limits: true
-      pulloff_mm: 2.000
+      pulloff_mm: 1.000
       stepstick:
         step_pin: I2SO.7
         direction_pin: I2SO.8:low
@@ -124,43 +131,48 @@ i2so:
   data_pin: gpio.27
   ws_pin: gpio.26
 
-spi:
-  miso_pin: gpio.19
-  mosi_pin: gpio.23
-  sck_pin: gpio.18
+# spi:
+#   miso_pin: gpio.19
+#   mosi_pin: gpio.23
+#   sck_pin: gpio.18
 
 # sdcard:
 #   cs_pin: gpio.5
 #   card_detect_pin: NO_PIN
 
 control:
+  estop_pin: gpio.36
   safety_door_pin: NO_PIN
   reset_pin: NO_PIN
   feed_hold_pin: NO_PIN
   cycle_start_pin: NO_PIN
   # EXP1 BTN_ENC
-  # macro0_pin: gpio.4:low:pu
-  macro0_pin: NO_PIN
-  macro1_pin: NO_PIN
-  macro2_pin: NO_PIN
-  macro3_pin: NO_PIN
+  macro0_pin: gpio.19:low:pu
+  macro1_pin: gpio.18:low:pu
+  macro2_pin: gpio.14:low:pu
+  macro3_pin: gpio.5:low:pu
+
 
 macros:
   startup_line0:
   startup_line1:
-  macro0: $LocalFs/Run=Macro0.gcode
-  macro1: 
-  macro2:
-  macro3:
+  macro0: $LocalFs/Run=JogX10.gcode
+  macro1: $LocalFs/Run=JogX10.gcode
+  macro2: $LocalFs/Run=JogX10.gcode
+  macro3: $LocalFs/Run=JogX10.gcode
 
 coolant:
-  flood_pin: NO_PIN
+#HE1 outout
+  flood_pin: I2SO.18
   mist_pin: NO_PIN
   delay_ms: 0
 
 probe:
-  # TB input
+  # TB input + VCC and GND from 3D touch input
   pin: gpio.39:low
+  # Warning: 3Dtouch connector Pinout differs from limit switches 1=signal 2=5V 3+GND, gpio.2 doesn't work as input 
+  toolsetter_pin: NO_PIN
+
   check_mode_start: true
 
 user_outputs:
@@ -179,37 +191,41 @@ user_outputs:
 
 start:
   must_home: false
-# # Spindle disabled because it is not connected at the moment  
-# # spindle PWM signal
-# PWM:
-#   pwm_hz: 2500
-#   # on EXP1 IO15 connector.
-#   # note IO15 will give some short pulses on boot, which may activate spindle
-#   # use IO17 on EXP1 to avoid
-#   output_pin: gpio.15:high
-#   s0_with_disable: true
-#   tool_num: 0
-#   spinup_ms: 4000
-#   spindown_ms: 4000
-#   speed_map: 0=0.000% 12000=100.000%
+# spindle PWM signal
+PWM:
+  # on EXP1 IO15 connector.
+  # note IO15 will give some short pulses on boot, which may activate spindle
+  # use IO17 on EXP1 to avoid
+  # A speed of 0 RPM (S0) will disable PWM
+  # an alarm will shutdown the spindle
+  pwm_hz: 2500
+  output_pin: gpio.15:high
+  s0_with_disable: true
+  off_on_alarm: true
+  tool_num: 0
+  spinup_ms: 4000
+  spindown_ms: 4000
+  # speed_map: 0=0.000% 12000=100.000%
+  speed_map: 0=0.0% 500=4.1% 1000=6.9% 1500=11.5% 2000=16.7% 2500=22.0% 3000=27.3% 3500=32.9%
 
-# Oled disabled because it is not connected at the moment
-# i2c0:
-#    sda_pin: gpio.14
-#    scl_pin: gpio.13
-
-# oled:
-#    i2c_num: 0
-#    i2c_address: 60
-#    width: 128
-#    height: 64
-#    radio_delay_ms: 1000
+# Disable i2c and oled when not used
+i2c0:
+  #  sda_pin: gpio.14
+   scl_pin: gpio.12
+   sda_pin: gpio.23
+ 
+oled:
+   i2c_num: 0
+   i2c_address: 60
+   width: 128
+   height: 64
+   radio_delay_ms: 1000
 
 # oled I2 connection:
 # Warning, connector housing on the tinybee board is wrong, rotated 180°. Pin 1 mark (square solder pad) is OK.
-# Tested using 128x64 SDD1306 LCD
-# EXP1-2 = SCL
-# EXP2-3 = SDA
+# Tested using 128x64 SDD1306 LCD, 0.96"
+# EXP2-5 = SCL
+# EXP2-6 = SDA
 # EXP2-9 = VCC (3v3)
 # EXP2-10 = GND
 
