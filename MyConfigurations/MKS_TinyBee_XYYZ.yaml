@@ -14,6 +14,7 @@
 # $Startup/Show     shows the startup messages
 # $Limits           show the limit switch status realtime
 # $NVX              erase settings. Do this to ensure only config file settings are used
+# $CD=Test1.yaml    saves the current configuration to a file. Setting in webui are not stored automaticcally
 # Current range X Y Z: 140 240 120
 
 # Prepare Squaring, move to measurement positionin in WO G53 (machine position)
@@ -43,7 +44,7 @@ axes:
   x:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
-    acceleration_mm_per_sec2: 100.000
+    acceleration_mm_per_sec2: 50.000
     max_travel_mm: 141.000
     soft_limits: true
     homing:
@@ -69,7 +70,7 @@ axes:
     # Y
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
-    acceleration_mm_per_sec2: 100.000
+    acceleration_mm_per_sec2: 50.000
     max_travel_mm: 241.000
     soft_limits: true
     homing:
@@ -85,16 +86,17 @@ axes:
     motor0:
       limit_neg_pin: gpio.32:low:pu
       hard_limits: true
-      pulloff_mm: 1.000
+      pulloff_mm: 1.0
       stepstick:
         step_pin: I2SO.4
         direction_pin: I2SO.5
         disable_pin: I2SO.3
     #Motor Y2, CN=E1
     motor1:
-      limit_neg_pin: gpio.35:low:pu
+      # limit_neg_pin: gpio.35:low:pu  pu is not supported on gpio.35!!!!
+      limit_neg_pin: gpio.35:low
       # hard_limits: true
-      pulloff_mm: 1.10
+      pulloff_mm: 1.64
       stepstick:
         step_pin: I2SO.10
         direction_pin: I2SO.11
@@ -104,7 +106,7 @@ axes:
     # Z
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
-    acceleration_mm_per_sec2: 150.000
+    acceleration_mm_per_sec2: 50.000
     max_travel_mm: 120.000
     soft_limits: true
     homing:
@@ -147,19 +149,22 @@ control:
   feed_hold_pin: NO_PIN
   cycle_start_pin: NO_PIN
   # EXP1 BTN_ENC
-  macro0_pin: gpio.19:low:pu
-  macro1_pin: gpio.18:low:pu
-  macro2_pin: gpio.14:low:pu
-  macro3_pin: gpio.5:low:pu
-
+  # EXP2 macro switches and oled display (3V3)
+  # NO switches pickup spikes, have to change to NC
+  # macro0_pin: gpio.5:low:pu
+  # macro1_pin: gpio.14:low:pu
+  # macro2_pin: gpio.18:low:pu
+  # macro3_pin: gpio.19:low:pu
+  
 
 macros:
+  # enable Fan0 that powers the PWM to DC converter so the spindle does not turn shortly when powering up
   startup_line0:
   startup_line1:
-  macro0: $LocalFs/Run=JogX10.gcode
-  macro1: $LocalFs/Run=JogX10.gcode
-  macro2: $LocalFs/Run=JogX10.gcode
-  macro3: $LocalFs/Run=JogX10.gcode
+  # macro0: $H
+  # macro1: $LocalFs/Run=Probe.gcode
+  # macro2: $J=G91 G21 F100 X-0.01
+  # macro3: $J=G91 G21 F100 Y+0.01
 
 coolant:
 #HE1 outout
@@ -176,6 +181,7 @@ probe:
   check_mode_start: true
 
 user_outputs:
+
   analog0_pin: NO_PIN
   analog1_pin: NO_PIN
   analog2_pin: NO_PIN
@@ -184,13 +190,17 @@ user_outputs:
   analog1_hz: 5000
   analog2_hz: 5000
   analog3_hz: 5000
-  digital0_pin: NO_PIN
+  # FAN 1
+  # Turn FAN1 on: M64 P0
+  # Turn FAN1 off: M65 P0
+  # digital0_pin: I2SO.19
+  # digital0_pin: NO_PIN
   digital1_pin: NO_PIN
   digital2_pin: NO_PIN
   digital3_pin: NO_PIN
 
 start:
-  must_home: false
+  must_home: true
 # spindle PWM signal
 PWM:
   # on EXP1 IO15 connector.
@@ -200,13 +210,14 @@ PWM:
   # an alarm will shutdown the spindle
   pwm_hz: 2500
   output_pin: gpio.15:high
+  #enable pin: I2SO.19:high
   s0_with_disable: true
   off_on_alarm: true
   tool_num: 0
   spinup_ms: 4000
   spindown_ms: 4000
   # speed_map: 0=0.000% 12000=100.000%
-  speed_map: 0=0.0% 500=4.1% 1000=6.9% 1500=11.5% 2000=16.7% 2500=22.0% 3000=27.3% 3500=32.9%
+  speed_map: 0=0.0% 399=3.75% 450=3.8% 500=4.1% 1000=6.9% 1500=11.5% 2000=16.7% 2500=22.0% 3000=27.3% 3500=32.9%
 
 # Disable i2c and oled when not used
 i2c0:
