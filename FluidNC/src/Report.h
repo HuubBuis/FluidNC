@@ -38,7 +38,7 @@ enum class Message : uint8_t {
     SleepMode       = 11,
     ConfigAlarmLock = 12,
     HardStop        = 13,
-    FileQuit        = 60,  // mc_reset was called during a file job
+    FileQuit        = 60,  // mc_critical was called during a file job
 };
 
 typedef uint8_t Counter;  // Report interval
@@ -92,6 +92,7 @@ const char* state_name();
 
 extern const char* grbl_version;
 extern const char* git_info;
+extern const char* git_url;
 
 // Callout to custom code
 void display_init();
