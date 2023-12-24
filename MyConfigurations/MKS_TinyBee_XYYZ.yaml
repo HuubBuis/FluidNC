@@ -86,7 +86,7 @@ axes:
     motor0:
       limit_neg_pin: gpio.32:low:pu
       hard_limits: true
-      pulloff_mm: 1.0
+      pulloff_mm: 1.16
       stepstick:
         step_pin: I2SO.4
         direction_pin: I2SO.5
@@ -95,8 +95,8 @@ axes:
     motor1:
       # limit_neg_pin: gpio.35:low:pu  pu is not supported on gpio.35!!!!
       limit_neg_pin: gpio.35:low
-      # hard_limits: true
-      pulloff_mm: 1.64
+      hard_limits: true
+      pulloff_mm: 1.0
       stepstick:
         step_pin: I2SO.10
         direction_pin: I2SO.11
@@ -138,12 +138,13 @@ i2so:
 #   mosi_pin: gpio.23
 #   sck_pin: gpio.18
 
-# sdcard:
+ sdcard:
 #   cs_pin: gpio.5
 #   card_detect_pin: NO_PIN
 
 control:
   estop_pin: gpio.36
+  #estop_pin: gpio.39
   safety_door_pin: NO_PIN
   reset_pin: NO_PIN
   feed_hold_pin: NO_PIN
@@ -201,6 +202,7 @@ user_outputs:
 
 start:
   must_home: true
+
 # spindle PWM signal
 PWM:
   # on EXP1 IO15 connector.
@@ -209,16 +211,20 @@ PWM:
   # A speed of 0 RPM (S0) will disable PWM
   # an alarm will shutdown the spindle
   pwm_hz: 2500
+  #DBLS-01S driver, BF03 motor, PWM to Voltage speed signal
   output_pin: gpio.15:high
+  #speed_map: 0=0% 160=3% 392=4% 583=5% 718=6% 937=8% 1113=10% 1430=14% 1741=18% 2059=22% 2383=26% 2717=30% 3019=34% 3200=100%
+  #DBLS-01S driver, BF03 motor, PWM speed signal
+  speed_map: 0=0% 218=6% 288=8% 355=10% 420=12% 518=14% 615=18% 721=21% 826=24% 955=28% 1060=31% 1225=36% 1400=41% 1590=47% 1773=52% 1965=58% 2220=65% 2385=70% 2616=77% 2830=83% 3030=89%
+  #speed_map: 0=0% 1000=100%
   #enable pin: I2SO.19:high
   s0_with_disable: true
   off_on_alarm: true
   tool_num: 0
   spinup_ms: 4000
   spindown_ms: 4000
-  # speed_map: 0=0.000% 12000=100.000%
-  speed_map: 0=0.0% 399=3.75% 450=3.8% 500=4.1% 1000=6.9% 1500=11.5% 2000=16.7% 2500=22.0% 3000=27.3% 3500=32.9%
-
+  
+  
 # Disable i2c and oled when not used
 i2c0:
   #  sda_pin: gpio.14
