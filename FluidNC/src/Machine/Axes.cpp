@@ -263,7 +263,7 @@ namespace Machine {
         return retval;
     }
 
-    MotorMask::hardLimitMask() {
+    MotorMask Axes::hardLimitMask() {
         MotorMask mask;
         for (int axis = 0; axis < _numberAxis; ++axis) {
             auto a = _axis[axis];
