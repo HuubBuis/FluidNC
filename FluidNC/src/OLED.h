@@ -28,6 +28,7 @@ public:
     static Layout limitLabelLayout;
     static Layout posLabelLayout;
     static Layout radioAddrLayout;
+    static Layout alarmInfoLayout;
 
 private:
     std::string _report;
@@ -63,6 +64,7 @@ private:
     void show_file();
     void show_dro(const float* axes, bool isMpos, bool* limits);
     void show_radio_info();
+    void show_alarm_info(bool probe, const bool* limits);
     void draw_checkbox(int16_t x, int16_t y, int16_t width, int16_t height, bool checked);
 
     void wrapped_draw_string(int16_t y, const std::string& s, font_t font);

@@ -1,5 +1,5 @@
 #include "OLED.h"
-
+#include "Control.h"
 #include "Machine/MachineConfig.h"
 
 void OLED::show(Layout& layout, const char* msg) {
@@ -21,6 +21,7 @@ OLED::Layout OLED::percentLayout64  = { 64, 0, 64, ArialMT_Plain_16, TEXT_ALIGN_
 OLED::Layout OLED::limitLabelLayout = { 80, 14, 128, ArialMT_Plain_10, TEXT_ALIGN_LEFT };
 OLED::Layout OLED::posLabelLayout   = { 60, 14, 128, ArialMT_Plain_10, TEXT_ALIGN_RIGHT };
 OLED::Layout OLED::radioAddrLayout  = { 50, 0, 128, ArialMT_Plain_10, TEXT_ALIGN_LEFT };
+OLED::Layout OLED::alarmInfoLayout  = { 50, 0, 128, ArialMT_Plain_16, TEXT_ALIGN_LEFT };
 
 void OLED::afterParse() {
     if (!config->_i2c[_i2c_num]) {
@@ -190,6 +191,27 @@ void OLED::show_radio_info() {
     }
 }
 
+void OLED::show_alarm_info(bool probe, const bool* limits) {
+    auto        n_axis = config->_axes->_numberAxis;
+    std::string s      = "Unknown";
+    if (_state != "Alarm") {
+        return;
+    }
+    if (Homing::unhomed_axes()) {
+        s = "U";
+    }
+    for (uint8_t axis = X_AXIS; axis < n_axis; axis++) {
+        if (limits[axis]) {
+            s += Machine::Axes::_names[axis];
+        }
+    }
+    s += config->_control->report_status();
+    if (probe) {
+        s += "P";
+    }
+    show(alarmInfoLayout, s);
+}
+
 void OLED::parse_numbers(std::string s, float* nums, int maxnums) {
     size_t pos     = 0;
     size_t nextpos = -1;
@@ -350,6 +372,7 @@ void OLED::parse_status_report() {
     show_limits(probe, limits);
     show_dro(axes, isMpos, limits);
     show_radio_info();
+    show_alarm_info(probe, limits);
     _oled->display();
 }
 

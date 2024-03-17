@@ -177,10 +177,12 @@ coolant:
   delay_ms: 0
 
 probe:
-  # TB input + VCC and GND from 3D touch input
+  # TB input + VCC and GND from 3D touch input for connecting a (NO) proximity switch
+  #pin: gpio.39:low:pu is not supported on gpio.39!!!!
+  # Warning  gpio.39 needs a pull-up resistor (4k7) when no probe or a passive probe (simple switch) is connected
   pin: gpio.39:low
-  # Warning: 3Dtouch connector Pinout differs from limit switches 1=signal 2=5V 3+GND, gpio.2 doesn't work as input 
-  toolsetter_pin: NO_PIN
+  # Warning: 3Dtouch connector Pinout differs from limit switches 1=signal 2=5V 3+GND, gpio.2 doesn't work as input
+   toolsetter_pin: NO_PIN
 
   check_mode_start: true
 
@@ -243,11 +245,22 @@ oled:
 
 # oled I2 connection:
 # Warning, connector housing on the tinybee board is wrong, rotated 180°. Pin 1 mark (square solder pad) is OK.
-# Tested using 128x64 SDD1306 LCD, 0.96"
+# Tested using 128x64 SDD1306 LCD, 0.96", 1.5 m Cat5e cable and 3k1 pullup resistor on SCL and SDA
+# For wires longer than 0.5 m you need to add a 2k7 to 3k3 pullup resistor between SCL&VCC and SDA&VCC
 # EXP2-5 = SCL
 # EXP2-6 = SDA
 # EXP2-9 = VCC (3v3)
 # EXP2-10 = GND
+
+#JST <==> EXP2  the JST connector is 8 pin and connected to a RJ45 breakout board
+#1  macro0_pin: gpio.5
+#2  macro1_pin: gpio.14
+#3  macro2_pin: gpio.18
+#4  macro3_pin: gpio.19
+#5  EXP2-5 = SCL = gpio.12
+#6  EXP2-6 = SDA = gpio.23
+#7  EXP2-10 = GND
+#8  EXP2-9 = VCC (3v3)
 
  # USB  TX0(1)  RX0(3)
  # J3-> TX2(17) RX2(16)
