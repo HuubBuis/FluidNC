@@ -1,0 +1,9 @@
+To do threading, whe need to know the time at witch an event (index_pulse, sync_pulse) occured
+The accuracy is determind by the delay between an event and the acutal action (start moving, adjusting speed)
+There CPU cycle counter can be used to track time with a 240 Mhz resolution (4 us);
+The CPU cycle counter is 32 bits resulting in a ~18 seconds range
+Together with an overflow counter, whe have an adequate time measuring, comparable to the grbl-l & grbl-l-mega solution
+
+The first test is to measure the RPM using the tics between events. The RPM can be shown on the Oled during status updates.
+First test by showing the tic count. It will show the jitter in tics.
+

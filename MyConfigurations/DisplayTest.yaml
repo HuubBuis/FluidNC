@@ -1,3 +1,9 @@
+#usefull commands:
+# $Startup/Show     shows the startup messages
+# $Limits           show the limit switch status realtime
+# $NVX              erase settings. Do this to ensure only config file settings are used
+# $CD=Test1.yaml    saves the current configuration to a file. Setting in webui are not stored automaticcally
+
 name: "ESP32 Controller V01"
 board: "HW V4"
 
@@ -16,7 +22,8 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 2000
     acceleration_mm_per_sec2: 25
-    max_travel_mm: 1000
+    max_travel_mm: 100
+    
     homing:
       cycle: 2
       mpos_mm: 10
@@ -54,3 +61,4 @@ oled:
 
 start:
   must_home: true
+  # fault

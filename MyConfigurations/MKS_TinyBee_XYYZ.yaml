@@ -45,13 +45,13 @@ axes:
     steps_per_mm: 800
     max_rate_mm_per_min: 700.000
     acceleration_mm_per_sec2: 50.000
-    max_travel_mm: 141.000
+    max_travel_mm: 142.000
     soft_limits: true
     homing:
       cycle: 3
       positive_direction: false
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
+      feed_mm_per_min: 250.000
       seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
@@ -77,7 +77,7 @@ axes:
       cycle: 2
       positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
+      feed_mm_per_min: 250.000
       seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
@@ -86,7 +86,7 @@ axes:
     motor0:
       limit_neg_pin: gpio.32:low:pu
       hard_limits: true
-      pulloff_mm: 1.0
+      pulloff_mm: 1.2
       stepstick:
         step_pin: I2SO.4
         direction_pin: I2SO.5
@@ -97,14 +97,11 @@ axes:
       limit_neg_pin: gpio.35:low
       hard_limits: true
       pulloff_mm: 1.0
+
       stepstick:
         step_pin: I2SO.10
         direction_pin: I2SO.11
         disable_pin: I2SO.9
-        #On my board there is a bad connector, so selecting the spare
-        #step_pin: I2SO.13
-        #direction_pin: I2SO.14
-        #disable_pin: I2SO.12
 
   z:
     # Z
@@ -117,15 +114,15 @@ axes:
       cycle: 1
       positive_direction: true
       mpos_mm: 0.000
-      feed_mm_per_min: 100.000
+      feed_mm_per_min: 250.000
       seek_mm_per_min: 700.000
       settle_ms: 500
       seek_scaler: 1.100
-      feed_scaler: 1.100
+      feed_scaler: 1.200
     #Motor Z, CN=Z
     motor0:
       limit_pos_pin: gpio.22:low:pu
-      #hard_limits: true
+      hard_limits: true
       pulloff_mm: 1.000
       stepstick:
         step_pin: I2SO.7
@@ -152,26 +149,18 @@ control:
   reset_pin: NO_PIN
   feed_hold_pin: NO_PIN
   cycle_start_pin: NO_PIN
-  # EXP1 BTN_ENC
-  # EXP2 macro switches and oled display (3V3)
-  # NO switches pickup spikes, have to change to NC
-  # macro0_pin: gpio.5:low:pu
-  # macro1_pin: gpio.14:low:pu
-  # macro2_pin: gpio.18:low:pu
-  # macro3_pin: gpio.19:low:pu
   
-
 macros:
-  # enable Fan0 that powers the PWM to DC converter so the spindle does not turn shortly when powering up
   startup_line0:
   startup_line1:
   # macro0: $H
   # macro1: $LocalFs/Run=Probe.gcode
+  # macro1: $Startup/Show
   # macro2: $J=G91 G21 F100 X-0.01
   # macro3: $J=G91 G21 F100 Y+0.01
 
 coolant:
-#HE1 outout
+#HE1 outout for flood to drive a relay. Could be done without relay using the heated bed output, have to test
   flood_pin: I2SO.18
   mist_pin: NO_PIN
   delay_ms: 0
@@ -181,13 +170,11 @@ probe:
   #pin: gpio.39:low:pu is not supported on gpio.39!!!!
   # Warning  gpio.39 needs a pull-up resistor (4k7) when no probe or a passive probe (simple switch) is connected
   pin: gpio.39:low
-  # Warning: 3Dtouch connector Pinout differs from limit switches 1=signal 2=5V 3+GND, gpio.2 doesn't work as input
-   toolsetter_pin: NO_PIN
-
+  # Warning: 3Dtouch connector Pinout differs from limit switches 1=signal 2=5V 3+GND, gpio.2 doesn't work as input 
+  toolsetter_pin: NO_PIN
   check_mode_start: true
 
 user_outputs:
-
   analog0_pin: NO_PIN
   analog1_pin: NO_PIN
   analog2_pin: NO_PIN
@@ -200,7 +187,7 @@ user_outputs:
   # Turn FAN1 on: M64 P0
   # Turn FAN1 off: M65 P0
   # digital0_pin: I2SO.19
-  # digital0_pin: NO_PIN
+  digital0_pin: NO_PIN
   digital1_pin: NO_PIN
   digital2_pin: NO_PIN
   digital3_pin: NO_PIN
@@ -216,9 +203,7 @@ PWM:
   # A speed of 0 RPM (S0) will disable PWM
   # an alarm will shutdown the spindle
   pwm_hz: 2500
-  #DBLS-01S driver, BF03 motor, PWM to Voltage speed signal
   output_pin: gpio.15:high
-  #speed_map: 0=0% 160=3% 392=4% 583=5% 718=6% 937=8% 1113=10% 1430=14% 1741=18% 2059=22% 2383=26% 2717=30% 3019=34% 3200=100%
   #DBLS-01S driver, BF03 motor, PWM speed signal
   speed_map: 0=0% 218=6% 288=8% 355=10% 420=12% 518=14% 615=18% 721=21% 826=24% 955=28% 1060=31% 1225=36% 1400=41% 1590=47% 1773=52% 1965=58% 2220=65% 2385=70% 2616=77% 2830=83% 3030=89%
   #speed_map: 0=0% 1000=100%
@@ -227,12 +212,13 @@ PWM:
   off_on_alarm: true
   tool_num: 0
   spinup_ms: 4000
-  spindown_ms: 4000
-  
+  spindown_ms: 1000
   
 # Disable i2c and oled when not used
+# Oled configuration is positioned at the top of the file
+# So configuration errors are shown
+# But this isn't working at the moment
 i2c0:
-  #  sda_pin: gpio.14
    scl_pin: gpio.12
    sda_pin: gpio.23
  
@@ -243,16 +229,18 @@ oled:
    height: 64
    radio_delay_ms: 1000
 
+# 2 lines for testing the display of configuration errors
+# oled:
+#   i2c_num: 0  
+
+
 # oled I2 connection:
 # Warning, connector housing on the tinybee board is wrong, rotated 180°. Pin 1 mark (square solder pad) is OK.
 # Tested using 128x64 SDD1306 LCD, 0.96", 1.5 m Cat5e cable and 3k1 pullup resistor on SCL and SDA
 # For wires longer than 0.5 m you need to add a 2k7 to 3k3 pullup resistor between SCL&VCC and SDA&VCC
-# EXP2-5 = SCL
-# EXP2-6 = SDA
-# EXP2-9 = VCC (3v3)
-# EXP2-10 = GND
 
-#JST <==> EXP2  the JST connector is 8 pin and connected to a RJ45 breakout board
+# I use a IDC10 to JST8 connector to wire the display & buttons
+# JST <==> EXP2  the JST connector is 8 pin and connected to a RJ45 breakout board
 #1  macro0_pin: gpio.5
 #2  macro1_pin: gpio.14
 #3  macro2_pin: gpio.18

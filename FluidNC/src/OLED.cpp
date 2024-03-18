@@ -1,5 +1,5 @@
 #include "OLED.h"
-#include "Control.h"
+#include "limits.h"
 #include "Machine/MachineConfig.h"
 
 void OLED::show(Layout& layout, const char* msg) {
@@ -192,7 +192,7 @@ void OLED::show_radio_info() {
 }
 
 void OLED::show_alarm_info(bool probe, const bool* limits) {
-    auto        n_axis = config->_axes->_numberAxis;
+    auto n_axis = config->_axes->_numberAxis;
     std::string s      = "Unknown";
     if (_state != "Alarm") {
         return;
@@ -200,15 +200,24 @@ void OLED::show_alarm_info(bool probe, const bool* limits) {
     if (Homing::unhomed_axes()) {
         s = "U";
     }
+    if (soft_limit) {
+       s = "S";
+    }
     for (uint8_t axis = X_AXIS; axis < n_axis; axis++) {
         if (limits[axis]) {
             s += Machine::Axes::_names[axis];
         }
     }
+    // Add all active pins
     s += config->_control->report_status();
     if (probe) {
         s += "P";
     }
+    // Configuration alarm is not working yet because OLED is not parsed when config error
+    // All other alarms are cleared
+    if (sys.state == State::ConfigAlarm) {
+        s = "Config ";
+    } 
     show(alarmInfoLayout, s);
 }
 
